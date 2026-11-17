@@ -1,0 +1,17 @@
+{
+  "name": "g2-geekreader-worker",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "dev": "wrangler dev --test-scheduled --port 8790",
+    "typecheck": "tsc",
+    "deploy": "wrangler deploy -c wrangler.local.jsonc"
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "^5.20261115.1",
+    "typescript": "~6.0",
+    "wrangler": "^4.162.0"
+  },
+  "license": "MIT"
+}

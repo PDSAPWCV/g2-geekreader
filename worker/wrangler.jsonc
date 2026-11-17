@@ -1,0 +1,16 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "geekreader-kr",
+  "main": "src/index.ts",
+  "compatibility_date": "2026-11-01",
+  "kv_namespaces": [
+    {
+      "binding": "FEED",
+      // 자리 표시 값. 로컬 실행(`npm run dev`)에는 쓰이지 않는다. 배포는 이 파일을 복사한
+      // wrangler.local.jsonc(git에 올리지 않음)에 실제 ID를 넣어서 한다. 이 파일을 고치면 그쪽도 맞춘다.
+      "id": "00000000000000000000000000000000"
+    }
+  ],
+  // 30분마다 피드를 읽어 KV에 모아 둔다 (하루 48회).
+  "triggers": { "crons": ["*/30 * * * *"] }
+}

@@ -1,0 +1,379 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <meta name="color-scheme" content="light dark" />
+    <title>GeekReader KR</title>
+    <style>
+      :root {
+        --bg: #f4f5f7;
+        --card: #ffffff;
+        --text: #16181d;
+        --muted: #6b7280;
+        --line: #e3e5ea;
+        --accent: #1f6feb;
+        --ok: #1a7f37;
+        --warn: #b35900;
+        --err: #c62828;
+        --lens-bg: #05080a;
+        --lens-fg: #3dff7a;
+      }
+      @media (prefers-color-scheme: dark) {
+        :root {
+          --bg: #0e1013;
+          --card: #181b20;
+          --text: #e8eaee;
+          --muted: #9aa1ad;
+          --line: #2a2e36;
+          --accent: #6ea8ff;
+          --ok: #56d364;
+          --warn: #f0a04b;
+          --err: #ff7b72;
+        }
+      }
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        padding: 16px 14px calc(28px + env(safe-area-inset-bottom));
+        background: var(--bg);
+        color: var(--text);
+        font: 15px/1.5 system-ui, -apple-system, 'Segoe UI', 'Noto Sans KR', sans-serif;
+        overflow-wrap: anywhere;
+      }
+      main {
+        max-width: 640px;
+        margin: 0 auto;
+        display: grid;
+        gap: 14px;
+      }
+      header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+        flex-wrap: wrap;
+      }
+      h1 {
+        margin: 0;
+        font-size: 20px;
+      }
+      h2 {
+        margin: 0 0 10px;
+        font-size: 15px;
+      }
+      .sub {
+        color: var(--muted);
+        font-size: 13px;
+      }
+      .card {
+        background: var(--card);
+        border: 1px solid var(--line);
+        border-radius: 12px;
+        padding: 14px;
+      }
+      .chip {
+        font-size: 13px;
+        padding: 3px 10px;
+        border-radius: 999px;
+        border: 1px solid var(--line);
+        color: var(--muted);
+        white-space: nowrap;
+      }
+      .chip[data-state='ok'] {
+        color: var(--ok);
+      }
+      .chip[data-state='loading'] {
+        color: var(--warn);
+      }
+      .chip[data-state='error'],
+      .chip[data-state='unconfigured'] {
+        color: var(--err);
+      }
+      button,
+      select,
+      input[type='text'],
+      input[type='url'] {
+        font: inherit;
+        color: var(--text);
+        background: var(--bg);
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        padding: 8px 12px;
+        min-height: 40px;
+      }
+      button {
+        cursor: pointer;
+      }
+      button:active {
+        border-color: var(--accent);
+      }
+      .row {
+        display: flex;
+        gap: 8px;
+        align-items: center;
+        flex-wrap: wrap;
+      }
+      .row + .row {
+        margin-top: 10px;
+      }
+      .grow {
+        flex: 1 1 160px;
+        min-width: 0;
+      }
+      label.check {
+        display: flex;
+        gap: 8px;
+        align-items: center;
+        min-height: 40px;
+      }
+
+      /* Lens preview: 576x288 scaled to the card width. One Hangul glyph is 18px wide on
+         the lens, so the font size is 18/576 of the width and a row is 40/576. */
+      .lens {
+        container-type: inline-size;
+        background: var(--lens-bg);
+        border-radius: 8px;
+        aspect-ratio: 2 / 1;
+        overflow: hidden;
+      }
+      .lens-rows {
+        padding-top: 1.04cqw;
+        color: var(--lens-fg);
+        font-size: 3.125cqw;
+      }
+      .lens-row {
+        height: 6.944cqw;
+        line-height: 6.944cqw;
+        padding-left: 0.7cqw;
+        white-space: pre;
+        overflow: hidden;
+      }
+      .lens-row[data-color='3'] {
+        opacity: 0.82;
+      }
+      .lens-row[data-color='2'] {
+        opacity: 0.58;
+      }
+      .pad {
+        display: grid;
+        grid-template-columns: repeat(5, 1fr);
+        gap: 6px;
+        margin-top: 10px;
+      }
+      .pad button {
+        padding: 8px 4px;
+        font-size: 13px;
+      }
+
+      ul.list {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+      }
+      ul.list li {
+        display: flex;
+        gap: 10px;
+        align-items: flex-start;
+        padding: 9px 0;
+        border-top: 1px solid var(--line);
+      }
+      ul.list li:first-child {
+        border-top: 0;
+      }
+      ul.list a {
+        color: var(--text);
+        text-decoration: none;
+      }
+      ul.list a:active {
+        color: var(--accent);
+      }
+      ul.list .meta {
+        color: var(--muted);
+        font-size: 12px;
+      }
+      ul.list li.read a {
+        color: var(--muted);
+      }
+      ul.list li.current {
+        border-left: 3px solid var(--accent);
+        padding-left: 8px;
+      }
+      /* The topic list can hold a day or more of topics, and the saved list only grows: keep
+         each to a window that scrolls on its own, so the sections below stay within reach. */
+      ul.list.scroll {
+        max-height: min(420px, 55vh);
+        overflow-y: auto;
+        padding-right: 6px;
+      }
+      /* The saved list sits under the topic list at half its height. */
+      ul.list.scroll.half {
+        max-height: min(210px, 27.5vh);
+      }
+      /* A 4px bar without arrow buttons. Chromium stops honouring these as soon as
+         `scrollbar-width` is set (its "thin" is 10px with arrows), so the standard
+         properties below are only for engines without the pseudo-elements. */
+      ul.list.scroll::-webkit-scrollbar {
+        width: 4px;
+      }
+      @supports not selector(::-webkit-scrollbar) {
+        ul.list.scroll {
+          scrollbar-width: thin;
+          scrollbar-color: var(--muted) transparent;
+        }
+      }
+      ul.list.scroll::-webkit-scrollbar-thumb {
+        background: var(--muted);
+        border-radius: 2px;
+      }
+      ul.list.scroll::-webkit-scrollbar-track {
+        background: transparent;
+      }
+      ul.list button {
+        min-height: 32px;
+        padding: 4px 10px;
+        font-size: 13px;
+        flex: none;
+      }
+      .empty {
+        color: var(--muted);
+        font-size: 14px;
+      }
+      table.keys {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 14px;
+      }
+      table.keys th,
+      table.keys td {
+        text-align: left;
+        padding: 6px 8px 6px 0;
+        border-top: 1px solid var(--line);
+        vertical-align: top;
+      }
+      table.keys tr:first-child th {
+        border-top: 0;
+        color: var(--muted);
+        font-weight: 500;
+      }
+      details summary {
+        cursor: pointer;
+        color: var(--muted);
+      }
+      pre.log {
+        margin: 10px 0 0;
+        max-height: 260px;
+        overflow: auto;
+        font: 12px/1.45 ui-monospace, Consolas, monospace;
+        white-space: pre-wrap;
+      }
+      pre.log .warn {
+        color: var(--warn);
+      }
+      pre.log .error {
+        color: var(--err);
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <header>
+        <h1>GeekReader KR</h1>
+        <span id="status" class="chip" data-state="idle">준비 중</span>
+      </header>
+
+      <section class="card">
+        <h2>안경 화면</h2>
+        <div class="lens"><div id="lens" class="lens-rows"></div></div>
+        <div class="pad" aria-label="안경 조작 흉내">
+          <button type="button" data-gesture="swipeUp">위로</button>
+          <button type="button" data-gesture="swipeDown">아래로</button>
+          <button type="button" data-gesture="tap">탭</button>
+          <button type="button" data-gesture="doubleTap">두 번 탭</button>
+          <button type="button" data-gesture="longPress">길게</button>
+        </div>
+        <div class="sub" style="margin-top: 8px">
+          버튼은 안경 조작을 폰에서 흉내 냅니다. 폰 글꼴로 그리므로 실제 렌즈와 줄 길이는 조금 다를 수 있습니다.
+        </div>
+      </section>
+
+      <section class="card">
+        <div class="row" style="justify-content: space-between">
+          <h2 style="margin: 0">글 목록 <span id="list-count" class="sub"></span></h2>
+          <button type="button" id="refresh">새로고침</button>
+        </div>
+        <ul id="items" class="list scroll" style="margin-top: 10px"></ul>
+      </section>
+
+      <section class="card">
+        <h2>저장한 글 <span id="saved-count" class="sub"></span></h2>
+        <ul id="saved" class="list scroll half"></ul>
+      </section>
+
+      <section class="card">
+        <h2>설정</h2>
+        <label class="check"><input type="checkbox" id="hide-read" /> 읽은 글은 안경에서 숨기기</label>
+        <div class="row">
+          <label for="max-age">보여줄 범위</label>
+          <select id="max-age" class="grow">
+            <option value="24">최근 24시간</option>
+            <option value="72">최근 3일</option>
+            <option value="0">받아 둔 글 전부</option>
+          </select>
+        </div>
+        <div class="row">
+          <button type="button" id="clear-read">읽음 기록 지우기</button>
+          <span id="read-count" class="sub"></span>
+        </div>
+      </section>
+
+      <section class="card">
+        <h2>안경 조작</h2>
+        <table class="keys">
+          <tr>
+            <th></th>
+            <th>훑어보기</th>
+            <th>요약 읽기</th>
+          </tr>
+          <tr>
+            <td>쓸기</td>
+            <td>다음 / 이전 글</td>
+            <td>다음 / 이전 쪽, 끝에서 한 번 더 쓸면 다음 글</td>
+          </tr>
+          <tr>
+            <td>탭</td>
+            <td>요약 읽기</td>
+            <td>다음 글</td>
+          </tr>
+          <tr>
+            <td>두 번 탭</td>
+            <td>앱 종료</td>
+            <td>훑어보기로 돌아가기</td>
+          </tr>
+          <tr>
+            <td>길게 누르기</td>
+            <td colspan="2">저장 / 저장 취소</td>
+          </tr>
+        </table>
+      </section>
+
+      <section class="card">
+        <details>
+          <summary>개발용</summary>
+          <div class="row" style="margin-top: 10px">
+            <input type="url" id="feed-base" class="grow" placeholder="피드 서버 주소 (예: https://….workers.dev)" />
+            <button type="button" id="feed-base-save">저장</button>
+          </div>
+          <div id="feed-info" class="sub" style="margin-top: 8px"></div>
+          <div class="row">
+            <button type="button" id="log-clear">로그 지우기</button>
+          </div>
+          <pre id="log" class="log"></pre>
+        </details>
+      </section>
+    </main>
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>
