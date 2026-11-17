@@ -46,14 +46,14 @@ function renderStatus(): void {
   const f = getFeed();
   const chip = $('status');
   chip.dataset.state = f.status;
-  if (isMock) chip.textContent = '데모 모드';
+  if (isMock) chip.textContent = '샘플 모드';
   else if (f.status === 'loading') chip.textContent = '불러오는 중';
   else if (f.status === 'error') chip.textContent = `오류: ${f.error}`;
   else if (f.status === 'unconfigured') chip.textContent = '피드 서버 주소 필요';
   else chip.textContent = f.fetchedAt ? `${hhmm(f.fetchedAt)} 갱신` : '준비 중';
 
   $('feed-info').textContent =
-    `피드 서버: ${isMock ? '(데모 모드)' : feedBase() || '(없음)'} · 받아 둔 글 ${f.items.length}개` +
+    `피드 서버: ${isMock ? '(샘플 모드)' : feedBase() || '(없음)'} · 받아 둔 글 ${f.items.length}개` +
     (f.error ? ` · 마지막 오류: ${f.error}` : '');
 }
 
@@ -177,7 +177,7 @@ subscribeLens(() => {
 onLog(renderLog);
 
 // ?debug=1: follow "go to this URL" commands from the dev server (vite.config.ts,
-// /__dev/goto), so one simulator window can be steered between demo data, the real
+// /__dev/goto), so one simulator window can be steered between sample data, the real
 // feed and the built app instead of being relaunched. The built app has no dev server
 // of its own and is told where to listen with ?ctl=http://localhost:5175.
 if (isDebug) {

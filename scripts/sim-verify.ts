@@ -12,7 +12,7 @@
 //      src/text.ts predicted. A row that is wider than predicted wraps inside its 40px
 //      container and loses its tail, so a mismatch here is the failure that matters.
 //
-// The page is moved between demo data, the real feed and (optionally) the
+// The page is moved between sample data, the real feed and (optionally) the
 // production build with the dev server's /__dev/goto command (pages opened with
 // ?debug=1 follow it) — the window is never relaunched, and the run ends back on the
 // dev page so it can be started again on the same window.
@@ -192,18 +192,18 @@ async function goto(url: string, name: string, pred: (l: Lens) => boolean, ms = 
   return ok;
 }
 
-// ── phase A: demo data (deterministic) ───────────────────────────────────────
+// ── phase A: sample data (deterministic) ───────────────────────────────────────
 async function phaseMock(): Promise<void> {
-  say('\n== A. 데모 모드: 조작 규칙 ==');
-  const n = 4; // the fifth demo topic is older than the default 24-hour range
+  say('\n== A. 샘플 모드: 조작 규칙 ==');
+  const n = 4; // the fifth sample topic is older than the default 24-hour range
   if (!(await goto('/?mock=1&reset=1&debug=1', 'A01 첫 화면은 첫 글의 카드', isCard(1, n)))) return;
-  check('A02 카드: 제목이 첫 줄', !!lens && lens.rows[0].startsWith('데모 글 1'), show());
+  check('A02 카드: 제목이 첫 줄', !!lens && lens.rows[0].startsWith('샘플 글 1'), show());
   check('A03 카드: 요약이 잘린 곳에 … 표시', !!lens && lens.rows[ROWS - 2].endsWith('…'), show());
   check('A04 카드: 밝기 제목 4 > 요약 3 > 상태 2', !!lens && lens.colors[0] === 4 && lens.colors[3] === 3 && lens.colors[6] === 2);
 
   await inert('A05 맨 위에서 위로 쓸면 그대로', 'up', isCard(1, n));
   await step('A06 아래로 쓸기 → 2번 글', 'down', isCard(2, n));
-  await step('A07 아래로 쓸기 → 3번 글 (영문 제목)', 'down', (l) => isCard(3, n)(l) && l.rows[0].startsWith('Demo topic 3'));
+  await step('A07 아래로 쓸기 → 3번 글 (영문 제목)', 'down', (l) => isCard(3, n)(l) && l.rows[0].startsWith('Sample topic 3'));
   await step('A08 아래로 쓸기 → 4번 글 (요약 없음)', 'down', isCard(4, n));
   await step('A09 탭 → 요약 읽기 (요약 없는 글 안내)', 'click', (l) => isRead(1, 1, 4, n)(l) && l.rows[0] === '(피드에 요약이 없는 글)');
   await step('A10 읽기에서 두 번 탭 → 같은 글 카드로 (종료 아님)', 'double_click', isCard(4, n));

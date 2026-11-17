@@ -36,7 +36,7 @@ function devFeed(): Plugin {
 
 // 개발용 조종 채널. `?debug=1`로 열린 페이지는 `/__dev/events`(SSE)를 듣고 있다가,
 // 누가 `GET /__dev/goto?u=<주소>`를 부르면 그 주소로 이동한다. 시뮬레이터 창을 다시 띄우지 않고
-// 데모 모드·실제 피드·빌드본을 오가며 확인하는 데 쓴다 (scripts/sim-verify.ts).
+// 샘플 모드·실제 피드·빌드본을 오가며 확인하는 데 쓴다 (scripts/sim-verify.ts).
 // 이 PC에서 온 요청만 받고, 이 PC의 주소로만 보낸다.
 const LOCAL_TARGET = /^(?:\/(?!\/)|https?:\/\/(?:localhost|127\.0\.0\.1)(?::\d+)?(?:\/|$))/;
 const isLoopback = (addr: string | undefined): boolean =>

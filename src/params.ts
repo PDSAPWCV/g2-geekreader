@@ -1,6 +1,6 @@
 // URL parameters for development and for the simulator check (scripts/sim-verify.ts).
 //
-//   ?mock=1    demo data instead of the feed
+//   ?mock=1    sample data instead of the feed
 //   ?reset=1   start from a clean slate: forget settings, read marks, saved topics and
 //              the feed cache (applies on every load while it is in the URL)
 //   ?debug=1   print what the lens shows to the console after every draw, and follow

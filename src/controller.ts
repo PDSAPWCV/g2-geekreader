@@ -182,7 +182,7 @@ export function applyGesture(g: InputGesture): void {
     case 'refresh':
       awaitingRefresh = true;
       // The feed store normally answers through onFeed(); the extra call covers the
-      // cases where it has nothing to announce (demo mode).
+      // cases where it has nothing to announce (sample mode).
       void refreshFeed(true).then(() => {
         if (awaitingRefresh) onFeed();
       });
