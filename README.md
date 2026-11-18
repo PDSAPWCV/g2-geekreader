@@ -7,6 +7,8 @@ Even Realities G2로 [GeekNews](https://news.hada.io) 글의 제목과 한글 �
 - 길게 누르면 "나중에 읽기"로 저장되고, 폰 화면에서 긱뉴스 글 페이지로 엽니다.
 - 읽은 글은 기억해 두었다가 다음에 열 때 안 읽은 글부터 보여줍니다.
 
+※ Not verified on hardware
+
 ## 조작
 
 | | 훑어보기 | 요약 읽기 |
@@ -46,8 +48,10 @@ npm rebuild @evenrealities/evenhub-simulator
 npm run dev
 ```
 
-http://localhost:5175 을 열면 폰 화면이 나옵니다. "안경 화면" 미리보기 아래의 버튼으로 안경 조작을 흉내 낼 수 있어
-시뮬레이터 없이도 흐름을 볼 수 있습니다. 개발 서버에 피드 중계가 들어 있어(`vite.config.ts`, 10분에 한 번만 피드를 읽음)
+http://localhost:5175 을 열면 폰 화면이 나옵니다. 
+"안경 화면" 미리보기 아래의 버튼으로 안경 조작을 흉내 낼 수 있어
+시뮬레이터 없이도 흐름을 볼 수 있습니다. 
+개발 서버에 피드 중계가 들어 있어(`vite.config.ts`, 10분에 한 번만 피드를 읽음)
 Worker 없이 실제 글이 나옵니다.
 
 ```bash
@@ -153,8 +157,6 @@ test/                 단위 테스트
 scripts/sim-verify.ts 시뮬레이터 자동 검증 (png.ts는 스크린샷 판독)
 scripts/pack.ts       패키지(.ehpk) 만들기: app.json whitelist에 Worker 주소 채우기
 ```
-
-not verified on hardware
 
 ## 라이선스
 
