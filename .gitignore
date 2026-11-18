@@ -8,3 +8,4 @@ dist
 .verify
 .pack
 worker/wrangler.local.jsonc
+BACKLOG.md
